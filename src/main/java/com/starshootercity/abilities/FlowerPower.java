@@ -36,20 +36,22 @@ public class FlowerPower implements VisibleAbility, Listener {
     public void onServerTickEnd(ServerTickEndEvent event) {
         if (event.getTickNumber() % 40 != 0) return;
         for (Player player : Bukkit.getOnlinePlayers()) {
-            List<Integer> points = List.of(-3, -2, -1, 0, 1, 2, 3);
-            int num = 0;
-            for (int x : points) {
-                for (int y : points) {
-                    for (int z : points) {
-                        Location loc = player.getLocation().clone().add(new Vector(x, y, z));
-                        if (loc.distance(player.getLocation()) > 3) continue;
-                        if (Tag.FLOWERS.isTagged(loc.getBlock().getType())) num += 1;
+            AbilityRegister.runForAbility(player, getKey(), () -> {
+                List<Integer> points = List.of(-3, -2, -1, 0, 1, 2, 3);
+                int num = 0;
+                for (int x : points) {
+                    for (int y : points) {
+                        for (int z : points) {
+                            Location loc = player.getLocation().clone().add(new Vector(x, y, z));
+                            if (loc.distance(player.getLocation()) > 3) continue;
+                            if (Tag.FLOWERS.isTagged(loc.getBlock().getType())) num += 1;
+                        }
                     }
                 }
-            }
-            if (num >= 3) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 0, false, true));
-            }
+                if (num >= 3) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 0, false, true));
+                }
+            });
         }
     }
 }
