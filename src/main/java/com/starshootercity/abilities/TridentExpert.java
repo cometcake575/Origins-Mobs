@@ -59,6 +59,8 @@ public class TridentExpert implements VisibleAbility, Listener, AttributeModifie
     private final NamespacedKey riptideKey = new NamespacedKey(OriginsMobs.getInstance(), "riptide-trident");
 
     public ItemStack fixTrident(ItemStack item) {
+        if (item == null) return null;
+        if (item.getItemMeta() == null) return item;
         if (item.getItemMeta().getPersistentDataContainer().has(riptideKey)) {
             ItemMeta meta = item.getItemMeta();
             int level = item.getItemMeta().getPersistentDataContainer().getOrDefault(riptideKey, PersistentDataType.INTEGER, 1);
