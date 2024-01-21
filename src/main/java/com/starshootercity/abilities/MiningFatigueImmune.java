@@ -17,7 +17,7 @@ public class MiningFatigueImmune implements Ability, Listener {
     public void onEntityPotionEffect(EntityPotionEffectEvent event) {
         AbilityRegister.runForAbility(event.getEntity(), getKey(), () -> {
             if (event.getNewEffect() != null) {
-                if (event.getNewEffect().getType() == PotionEffectType.POISON || event.getNewEffect().getType() == PotionEffectType.HUNGER) {
+                if (event.getNewEffect().getType() == PotionEffectType.SLOW_DIGGING) {
                     event.setCancelled(true);
                 }
             }
