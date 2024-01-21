@@ -1,0 +1,37 @@
+package com.starshootercity.originsmobs.abilities;
+
+import com.starshootercity.abilities.Ability;
+import com.starshootercity.abilities.AbilityRegister;
+import net.kyori.adventure.key.Key;
+import org.bukkit.entity.EntityType;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+public class Illager implements Ability, Listener {
+    @Override
+    public @NotNull Key getKey() {
+        return Key.key("moborigins:illager");
+    }
+
+    private final List<EntityType> ILLAGERS = List.of(
+            EntityType.ILLUSIONER,
+            EntityType.EVOKER,
+            EntityType.VINDICATOR,
+            EntityType.RAVAGER,
+            EntityType.VINDICATOR,
+            EntityType.WITCH,
+            EntityType.VEX,
+            EntityType.PILLAGER
+    );
+
+    @EventHandler
+    public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
+        if (ILLAGERS.contains(event.getEntity().getType())) {
+            AbilityRegister.runForAbility(event.getTarget(), getKey(), () -> event.setCancelled(true));
+        }
+    }
+}
