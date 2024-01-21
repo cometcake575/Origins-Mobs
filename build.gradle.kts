@@ -3,7 +3,7 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.5.11"
 }
 
-group = "com.starshootercity"
+group = "com.starshootercity.originsmobs"
 version = "1.0.1"
 
 repositories {
