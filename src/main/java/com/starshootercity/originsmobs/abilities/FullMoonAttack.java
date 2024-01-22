@@ -1,6 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.abilities.AttributeModifierAbility;
+import io.papermc.paper.world.MoonPhase;
 import net.kyori.adventure.key.Key;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -20,7 +21,7 @@ public class FullMoonAttack implements AttributeModifierAbility {
 
     @Override
     public double getChangedAmount(Player player) {
-        return !player.getWorld().isDayTime() ? 2 : 0;
+        return !player.getWorld().isDayTime() && player.getWorld().getMoonPhase() == MoonPhase.FULL_MOON ? 2 : 0;
     }
 
     @Override
