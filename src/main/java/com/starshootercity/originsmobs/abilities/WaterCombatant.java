@@ -29,6 +29,10 @@ public class WaterCombatant implements VisibleAbility, Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        AbilityRegister.runForAbility(event.getDamager(), getKey(), () -> event.setDamage(event.getDamage() + 3));
+        AbilityRegister.runForAbility(event.getDamager(), getKey(), () -> {
+            if (event.getDamager().isInWater()) {
+                event.setDamage(event.getDamage() + 3);
+            }
+        });
     }
 }
