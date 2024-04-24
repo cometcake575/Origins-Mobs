@@ -45,6 +45,7 @@ public class Split implements VisibleAbility, Listener {
     @EventHandler
     public void onPlayerLeftClick(PlayerLeftClickEvent event) {
         AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
+            if (event.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) return;
             if (Bukkit.getCurrentTick() - lastSplitTime.getOrDefault(event.getPlayer(), Bukkit.getCurrentTick() - 600) < 600) return;
             lastSplitTime.put(event.getPlayer(), Bukkit.getCurrentTick());
             ServerPlayer player = ((CraftPlayer) event.getPlayer()).getHandle();
