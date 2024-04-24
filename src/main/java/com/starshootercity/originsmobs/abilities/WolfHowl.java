@@ -37,6 +37,7 @@ public class WolfHowl implements VisibleAbility, Listener {
     @EventHandler
     public void onPlayerLeftClick(PlayerLeftClickEvent event) {
         AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
+            if (event.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) return;
             event.getPlayer().getWorld().playSound(event.getPlayer(), Sound.ENTITY_WOLF_HOWL, SoundCategory.PLAYERS, 1, 0.5f);
             for (Entity entity : event.getPlayer().getNearbyEntities(5, 5, 5)) {
                 if (entity instanceof LivingEntity livingEntity) {
