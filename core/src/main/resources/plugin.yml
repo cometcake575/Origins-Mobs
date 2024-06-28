@@ -1,0 +1,9 @@
+name: Origins-Mobs
+version: 1.0.13
+main: com.starshootercity.originsmobs.OriginsMobs
+description: Origins-Reborn addon based on the Mob Origins mod by UltrusBot
+api-version: '1.19'
+author: cometcake575
+
+depend:
+  - Origins-Reborn
