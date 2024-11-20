@@ -61,7 +61,7 @@ public class LavaWalk implements VisibleAbility, FlightAllowingAbility, Attribut
 
     @Override
     public @NotNull Attribute getAttribute() {
-        return Attribute.GENERIC_MOVEMENT_SPEED;
+        return OriginsReborn.getNMSInvoker().getMovementSpeedAttribute();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.Ability;
+import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.cooldowns.Cooldowns;
 import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Temperature implements Ability {
+public class Temperature implements CooldownAbility {
     @Override
     public @NotNull Key getKey() {
         return Key.key("moborigins:temperature");
@@ -16,11 +17,19 @@ public class Temperature implements Ability {
 
     private static final Map<Player, Integer> playerTemperatureMap = new HashMap<>();
 
-    public static int getTemperature(Player player) {
+    public static Temperature INSTANCE = new Temperature();
+
+    public int getTemperature(Player player) {
         return playerTemperatureMap.getOrDefault(player, 0);
     }
 
-    public static void setTemperature(Player player, int amount) {
+    public void setTemperature(Player player, int amount) {
         playerTemperatureMap.put(player, Math.max(0, Math.min(amount, 100)));
+        setCooldown(player, getTemperature(player));
+    }
+
+    @Override
+    public Cooldowns.CooldownInfo getCooldownInfo() {
+        return new Cooldowns.CooldownInfo(100, "temperature", true, true);
     }
 }

@@ -1,10 +1,10 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginSwapper;
+import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import net.kyori.adventure.key.Key;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -51,11 +51,11 @@ public class AlphaWolf implements VisibleAbility, Listener {
     }
 
     private void makeWolfStronger(LivingEntity wolf) {
-        AttributeInstance maxHealth = wolf.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance maxHealth = wolf.getAttribute(OriginsReborn.getNMSInvoker().getMaxHealthAttribute());
         if (maxHealth != null) {
             maxHealth.setBaseValue(maxHealth.getDefaultValue() + 10);
         }
-        AttributeInstance attackDamage = wolf.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
+        AttributeInstance attackDamage = wolf.getAttribute(OriginsReborn.getNMSInvoker().getAttackDamageAttribute());
         if (attackDamage != null) {
             attackDamage.setBaseValue(attackDamage.getDefaultValue() + 2);
         }

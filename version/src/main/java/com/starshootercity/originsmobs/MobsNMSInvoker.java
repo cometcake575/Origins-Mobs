@@ -2,6 +2,7 @@ package com.starshootercity.originsmobs;
 
 import com.destroystokyo.paper.entity.ai.Goal;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -27,4 +28,6 @@ public abstract class MobsNMSInvoker {
     public abstract Goal<Mob> getIronGolemAttackGoal(LivingEntity golem, Predicate<Player> hasAbility);
 
     public abstract void bounce(Player player);
+
+    public abstract @NotNull Attribute getAttackKnockbackAttribute();
 }

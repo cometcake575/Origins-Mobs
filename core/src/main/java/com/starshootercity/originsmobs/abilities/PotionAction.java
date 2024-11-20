@@ -4,23 +4,21 @@ import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.events.PlayerLeftClickEvent;
 import net.kyori.adventure.key.Key;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class PotionAction implements VisibleAbility, Listener {
+public class PotionAction implements VisibleAbility, Listener, CooldownAbility {
     @Override
     public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
         return OriginSwapper.LineData.makeLineFor("Get a random potion effect, based on the situation you are in.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
@@ -36,15 +34,13 @@ public class PotionAction implements VisibleAbility, Listener {
         return Key.key("moborigins:potion_action");
     }
 
-    private final Map<Player, Integer> lastUsedMagicTime = new HashMap<>();
-
     @EventHandler
     public void onPlayerLeftClick(PlayerLeftClickEvent event) {
         if (event.getItem() != null) return;
         AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
-            if (Bukkit.getCurrentTick() - lastUsedMagicTime.getOrDefault(event.getPlayer(), Bukkit.getCurrentTick() - 600) < 600) return;
+            if (hasCooldown(event.getPlayer())) return;
+            setCooldown(event.getPlayer());
             event.getPlayer().getWorld().playSound(event.getPlayer(), Sound.ENTITY_WITCH_DRINK, SoundCategory.VOICE, 1, 1);
-            lastUsedMagicTime.put(event.getPlayer(), Bukkit.getCurrentTick());
             PotionEffectType effectType;
             if (event.getPlayer().getFireTicks() > 0) {
                 effectType = PotionEffectType.FIRE_RESISTANCE;
@@ -57,5 +53,10 @@ public class PotionAction implements VisibleAbility, Listener {
             }
             event.getPlayer().addPotionEffect(new PotionEffect(effectType, 200, 0));
         });
+    }
+
+    @Override
+    public Cooldowns.CooldownInfo getCooldownInfo() {
+        return new Cooldowns.CooldownInfo(600, "potion_action");
     }
 }

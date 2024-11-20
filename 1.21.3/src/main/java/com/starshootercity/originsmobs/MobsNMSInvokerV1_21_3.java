@@ -1,14 +1,17 @@
 package com.starshootercity.originsmobs;
 
 import com.destroystokyo.paper.entity.ai.Goal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftMob;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -22,11 +25,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public class MobsNMSInvokerV1_20_5 extends MobsNMSInvoker {
+public class MobsNMSInvokerV1_21_3 extends MobsNMSInvoker {
     @Override
     public void dealThornsDamage(Entity target, int amount, Entity attacker) {
         net.minecraft.world.entity.Entity entity = ((CraftEntity) target).getHandle();
-        entity.hurt(entity.damageSources().thorns(((CraftEntity) attacker).getHandle()), amount);
+        entity.hurtServer((ServerLevel) entity.level(), entity.damageSources().thorns(((CraftEntity) attacker).getHandle()), amount);
+    }
+
+    @Override
+    public @NotNull Attribute getAttackKnockbackAttribute() {
+        return Attribute.ATTACK_KNOCKBACK;
     }
 
     @Override
@@ -51,7 +59,7 @@ public class MobsNMSInvokerV1_20_5 extends MobsNMSInvoker {
 
     @Override
     public void startAutoSpinAttack(Player player, int duration, float riptideAttackDamage, ItemStack item) {
-        ((CraftPlayer) player).getHandle().startAutoSpinAttack(duration);
+        ((CraftPlayer) player).getHandle().startAutoSpinAttack(duration, riptideAttackDamage, CraftItemStack.asNMSCopy(item));
     }
 
     @Override
@@ -60,14 +68,14 @@ public class MobsNMSInvokerV1_20_5 extends MobsNMSInvoker {
     }
 
     @Override
-    public Goal<Mob> getIronGolemAttackGoal(LivingEntity golem, Predicate<Player> hasAbility) {
+    public Goal<@NotNull Mob> getIronGolemAttackGoal(LivingEntity golem, Predicate<Player> hasAbility) {
         return new NearestAttackableTargetGoal<>(
                 ((CraftMob) golem).getHandle(),
                 net.minecraft.world.entity.player.Player.class,
                 10,
                 true,
                 false,
-                livingEntity -> {
+                (livingEntity, serverLevel) -> {
                     if (livingEntity.getBukkitEntity() instanceof org.bukkit.entity.Player player) {
                         return hasAbility.test(player);
                     } else return false;

@@ -8,6 +8,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftMob;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
@@ -95,5 +96,10 @@ public class MobsNMSInvokerV1_19 extends MobsNMSInvoker {
             }
         }
         lastVec3Map.put(player, p.getDeltaMovement());
+    }
+
+    @Override
+    public @NotNull Attribute getAttackKnockbackAttribute() {
+        return Attribute.GENERIC_ATTACK_KNOCKBACK;
     }
 }

@@ -1,6 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.abilities.AttributeModifierAbility;
+import com.starshootercity.originsmobs.OriginsMobs;
 import net.kyori.adventure.key.Key;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class SmallWeakKnockback implements Listener, AttributeModifierAbility {
     @Override
     public @NotNull Attribute getAttribute() {
-        return Attribute.GENERIC_ATTACK_KNOCKBACK;
+        return OriginsMobs.getNMSInvoker().getAttackKnockbackAttribute();
     }
 
     @Override

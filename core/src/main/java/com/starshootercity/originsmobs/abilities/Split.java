@@ -3,6 +3,8 @@ package com.starshootercity.originsmobs.abilities;
 import com.starshootercity.OriginSwapper;
 import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.events.PlayerLeftClickEvent;
 import com.starshootercity.originsmobs.OriginsMobs;
 import io.papermc.paper.event.entity.EntityMoveEvent;
@@ -24,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class Split implements VisibleAbility, Listener {
+public class Split implements VisibleAbility, Listener, CooldownAbility {
     @Override
     public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
         return OriginSwapper.LineData.makeLineFor("Turn your food points into a small slime to defend you!", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
@@ -40,15 +42,13 @@ public class Split implements VisibleAbility, Listener {
         return Key.key("moborigins:split");
     }
 
-    private final Map<Player, Integer> lastSplitTime = new HashMap<>();
-
     @EventHandler
     public void onPlayerLeftClick(PlayerLeftClickEvent event) {
         if (event.getItem() != null) return;
         if (event.getPlayer().getFoodLevel() < 8) return;
         AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
-            if (Bukkit.getCurrentTick() - lastSplitTime.getOrDefault(event.getPlayer(), Bukkit.getCurrentTick() - 600) < 600) return;
-            lastSplitTime.put(event.getPlayer(), Bukkit.getCurrentTick());
+            if (hasCooldown(event.getPlayer())) return;
+            setCooldown(event.getPlayer());
             event.getPlayer().setFoodLevel(event.getPlayer().getFoodLevel() - 8);
             Slime slime = (Slime) event.getPlayer().getWorld().spawnEntity(event.getPlayer().getLocation(), EntityType.SLIME);
             slime.setSize(2);
@@ -112,5 +112,10 @@ public class Split implements VisibleAbility, Listener {
                 }
             }
         }
+    }
+
+    @Override
+    public Cooldowns.CooldownInfo getCooldownInfo() {
+        return new Cooldowns.CooldownInfo(600, "split");
     }
 }

@@ -1,5 +1,6 @@
 package com.starshootercity.originsmobs.abilities;
 
+import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AttributeModifierAbility;
 import net.kyori.adventure.key.Key;
 import org.bukkit.attribute.Attribute;
@@ -14,7 +15,7 @@ import java.util.List;
 public class WolfPackAttack implements AttributeModifierAbility {
     @Override
     public @NotNull Attribute getAttribute() {
-        return Attribute.GENERIC_MAX_HEALTH;
+        return OriginsReborn.getNMSInvoker().getAttackDamageAttribute();
     }
 
     @Override

@@ -30,7 +30,7 @@ public class BetterBerries implements VisibleAbility, Listener {
 
     @EventHandler
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
-        if (event.getItem().getType() != Material.GLOW_BERRIES) return;
+        if (event.getItem().getType() != Material.SWEET_BERRIES) return;
         AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
             event.getPlayer().setFoodLevel(Math.min(event.getPlayer().getFoodLevel() + 2, 20));
             event.getPlayer().setSaturation(Math.min(event.getPlayer().getSaturation() + 1, event.getPlayer().getFoodLevel()));

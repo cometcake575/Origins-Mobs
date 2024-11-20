@@ -1,5 +1,6 @@
 package com.starshootercity.originsmobs.abilities;
 
+import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AttributeModifierAbility;
 import net.kyori.adventure.key.Key;
 import org.bukkit.attribute.Attribute;
@@ -15,7 +16,7 @@ public class SurfaceSlowness implements AttributeModifierAbility, Listener {
 
     @Override
     public @NotNull Attribute getAttribute() {
-        return Attribute.GENERIC_MOVEMENT_SPEED;
+        return OriginsReborn.getNMSInvoker().getMovementSpeedAttribute();
     }
 
     @Override

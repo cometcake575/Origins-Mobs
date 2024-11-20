@@ -1,12 +1,13 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginSwapper;
+import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.originsmobs.OriginsMobs;
 import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import com.starshootercity.events.PlayerLeftClickEvent;
 import net.kyori.adventure.key.Key;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -19,11 +20,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class SummonFangs implements VisibleAbility, Listener {
+public class SummonFangs implements VisibleAbility, Listener, CooldownAbility {
     @Override
     public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
         return OriginSwapper.LineData.makeLineFor("You have the ability to summon fangs!", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
@@ -39,14 +38,12 @@ public class SummonFangs implements VisibleAbility, Listener {
         return Key.key("moborigins:summon_fangs");
     }
 
-    private final Map<Player, Integer> lastUsedMagicTime = new HashMap<>();
-
     @EventHandler
     public void onPlayerLeftClick(PlayerLeftClickEvent event) {
         if (event.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) return;
         AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
-            if (Bukkit.getCurrentTick() - lastUsedMagicTime.getOrDefault(event.getPlayer(), Bukkit.getCurrentTick() - 600) < 600) return;
-            lastUsedMagicTime.put(event.getPlayer(), Bukkit.getCurrentTick());
+            if (hasCooldown(event.getPlayer())) return;
+            setCooldown(event.getPlayer());
             Location currentLoc = event.getPlayer().getLocation();
             for (int i = 0; i < 16; i++) {
                 currentLoc.add(currentLoc.getDirection().setY(0));
@@ -64,4 +61,9 @@ public class SummonFangs implements VisibleAbility, Listener {
     }
 
     private final NamespacedKey sentFromPlayerKey = new NamespacedKey(OriginsMobs.getInstance(), "sent-from-player");
+
+    @Override
+    public Cooldowns.CooldownInfo getCooldownInfo() {
+        return new Cooldowns.CooldownInfo(600, "summon_fangs");
+    }
 }

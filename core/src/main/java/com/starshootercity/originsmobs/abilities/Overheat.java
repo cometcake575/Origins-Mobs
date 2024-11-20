@@ -39,9 +39,9 @@ public class Overheat implements VisibleAbility, Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             AbilityRegister.runForAbility(player, getKey(), () -> {
                 if (player.getLocation().getBlock().getTemperature() < 1 || Tag.ICE.isTagged(player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType())) {
-                    Temperature.setTemperature(player, Temperature.getTemperature(player) - 1);
+                    Temperature.INSTANCE.setTemperature(player, Temperature.INSTANCE.getTemperature(player) - 1);
                 } else {
-                    Temperature.setTemperature(player, Temperature.getTemperature(player) + 1);
+                    Temperature.INSTANCE.setTemperature(player, Temperature.INSTANCE.getTemperature(player) + 1);
                 }
             });
         }
@@ -49,11 +49,11 @@ public class Overheat implements VisibleAbility, Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        Temperature.setTemperature(event.getPlayer(), 0);
+        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> Temperature.INSTANCE.setTemperature(event.getPlayer(), 0));
     }
 
     @EventHandler
     public void onPlayerSwapOrigin(PlayerSwapOriginEvent event) {
-        Temperature.setTemperature(event.getPlayer(), 0);
+        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> Temperature.INSTANCE.setTemperature(event.getPlayer(), 0));
     }
 }

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.starshootercity.originsmobs"
-version = "1.0.13"
+version = "1.0.22"
 
 repositories {
     mavenCentral()
@@ -19,8 +19,9 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":version"))
     implementation(project(":1.21", "reobf"))
+    implementation(project(":1.21.1", "reobf"))
+    implementation(project(":1.21.3", "reobf"))
     implementation(project(":1.20.6", "reobf"))
-    implementation(project(":1.20.5", "reobf"))
     implementation(project(":1.20.4", "reobf"))
     implementation(project(":1.20.3", "reobf"))
     implementation(project(":1.20.2", "reobf"))

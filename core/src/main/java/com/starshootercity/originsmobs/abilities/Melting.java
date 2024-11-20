@@ -1,6 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginSwapper;
+import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AttributeModifierAbility;
 import com.starshootercity.abilities.VisibleAbility;
 import net.kyori.adventure.key.Key;
@@ -29,7 +30,7 @@ public class Melting implements VisibleAbility, AttributeModifierAbility {
 
     @Override
     public @NotNull Attribute getAttribute() {
-        return Attribute.GENERIC_MAX_HEALTH;
+        return OriginsReborn.getNMSInvoker().getMaxHealthAttribute();
     }
 
     @Override
@@ -39,7 +40,7 @@ public class Melting implements VisibleAbility, AttributeModifierAbility {
 
     @Override
     public double getChangedAmount(Player player) {
-        int temperature = Temperature.getTemperature(player);
+        int temperature = Temperature.INSTANCE.getTemperature(player);
         if (temperature >= 100) return -8;
         else if (temperature >= 50) return -4;
         else return 0;

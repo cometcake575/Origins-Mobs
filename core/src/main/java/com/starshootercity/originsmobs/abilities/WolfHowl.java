@@ -4,6 +4,8 @@ import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.events.PlayerLeftClickEvent;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Sound;
@@ -19,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class WolfHowl implements VisibleAbility, Listener {
+public class WolfHowl implements VisibleAbility, Listener, CooldownAbility {
     @Override
     public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
         return OriginSwapper.LineData.makeLineFor("You can use the left click key when holding nothing to howl, and give speed and strength to nearby wolves and yourself.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
@@ -40,6 +42,8 @@ public class WolfHowl implements VisibleAbility, Listener {
         if (event.getClickedBlock() != null) return;
         if (event.getItem() != null) return;
         AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
+            if (hasCooldown(event.getPlayer())) return;
+            setCooldown(event.getPlayer());
             event.getPlayer().getWorld().playSound(event.getPlayer(), Sound.ENTITY_WOLF_HOWL, SoundCategory.PLAYERS, 1, 0.5f);
             for (Entity entity : event.getPlayer().getNearbyEntities(5, 5, 5)) {
                 if (entity instanceof LivingEntity livingEntity) {
@@ -50,5 +54,10 @@ public class WolfHowl implements VisibleAbility, Listener {
                 }
             }
         });
+    }
+
+    @Override
+    public Cooldowns.CooldownInfo getCooldownInfo() {
+        return new Cooldowns.CooldownInfo(900, "wolf_howl");
     }
 }

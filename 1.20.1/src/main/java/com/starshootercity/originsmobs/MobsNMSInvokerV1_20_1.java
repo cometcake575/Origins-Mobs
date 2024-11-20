@@ -6,6 +6,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftMob;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
@@ -27,6 +28,11 @@ public class MobsNMSInvokerV1_20_1 extends MobsNMSInvoker {
     public void dealThornsDamage(Entity target, int amount, Entity attacker) {
         net.minecraft.world.entity.Entity entity = ((CraftEntity) target).getHandle();
         entity.hurt(entity.damageSources().thorns(((CraftEntity) attacker).getHandle()), amount);
+    }
+
+    @Override
+    public @NotNull Attribute getAttackKnockbackAttribute() {
+        return Attribute.GENERIC_ATTACK_KNOCKBACK;
     }
 
     @Override

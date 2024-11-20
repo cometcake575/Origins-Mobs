@@ -1,5 +1,6 @@
 package com.starshootercity.originsmobs.abilities;
 
+import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AttributeModifierAbility;
 import io.papermc.paper.world.MoonPhase;
 import net.kyori.adventure.key.Key;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class FullMoonHealth implements AttributeModifierAbility {
     @Override
     public @NotNull Attribute getAttribute() {
-        return Attribute.GENERIC_MAX_HEALTH;
+        return OriginsReborn.getNMSInvoker().getMaxHealthAttribute();
     }
 
     @Override

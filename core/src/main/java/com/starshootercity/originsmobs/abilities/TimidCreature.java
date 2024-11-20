@@ -1,6 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginSwapper;
+import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AttributeModifierAbility;
 import com.starshootercity.abilities.VisibleAbility;
 import net.kyori.adventure.key.Key;
@@ -16,7 +17,7 @@ import java.util.List;
 public class TimidCreature implements VisibleAbility, AttributeModifierAbility {
     @Override
     public @NotNull Attribute getAttribute() {
-        return Attribute.GENERIC_MOVEMENT_SPEED;
+        return OriginsReborn.getNMSInvoker().getMovementSpeedAttribute();
     }
 
     @Override

@@ -60,7 +60,7 @@ public class OriginsMobs extends OriginsAddon {
                 new WolfPack(),
                 new WolfPackAttack(),
                 new ZombieHunger(),
-                new Temperature(),
+                Temperature.INSTANCE,
                 new Overheat(),
                 new Melting(),
                 new MeltingSpeed(),
@@ -88,9 +88,10 @@ public class OriginsMobs extends OriginsAddon {
             case "1.20.2" -> new MobsNMSInvokerV1_20_2();
             case "1.20.3" -> new MobsNMSInvokerV1_20_3();
             case "1.20.4" -> new MobsNMSInvokerV1_20_4();
-            case "1.20.5" -> new MobsNMSInvokerV1_20_5();
-            case "1.20.6" -> new MobsNMSInvokerV1_20_6();
+            case "1.20.5", "1.20.6" -> new MobsNMSInvokerV1_20_6();
             case "1.21" -> new MobsNMSInvokerV1_21();
+            case "1.21.1" -> new MobsNMSInvokerV1_21_1();
+            case "1.21.2", "1.21.3" -> new MobsNMSInvokerV1_21_3();
             default -> throw new IllegalStateException("Unexpected version: " + Bukkit.getMinecraftVersion() + " only versions 1.20 - 1.20.6 are supported");
         };
     }
