@@ -1,6 +1,5 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AttributeModifierAbility;
 import com.starshootercity.abilities.VisibleAbility;
@@ -8,8 +7,6 @@ import net.kyori.adventure.key.Key;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class Sly implements VisibleAbility, AttributeModifierAbility {
     @Override
@@ -28,13 +25,13 @@ public class Sly implements VisibleAbility, AttributeModifierAbility {
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("You are quicker.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "You are quicker.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Sly", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Sly";
     }
 
     @Override

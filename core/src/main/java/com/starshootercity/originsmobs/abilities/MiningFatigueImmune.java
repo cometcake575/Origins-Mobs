@@ -2,7 +2,6 @@ package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.Ability;
-import com.starshootercity.abilities.AbilityRegister;
 import net.kyori.adventure.key.Key;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,7 +16,7 @@ public class MiningFatigueImmune implements Ability, Listener {
 
     @EventHandler
     public void onEntityPotionEffect(EntityPotionEffectEvent event) {
-        AbilityRegister.runForAbility(event.getEntity(), getKey(), () -> {
+        runForAbility(event.getEntity(), player -> {
             if (event.getNewEffect() != null) {
                 if (event.getNewEffect().getType().equals(OriginsReborn.getNMSInvoker().getMiningFatigueEffect())) {
                     event.setCancelled(true);

@@ -1,12 +1,11 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
+import com.starshootercity.abilities.VisibleAbility;
 import com.starshootercity.cooldowns.CooldownAbility;
 import com.starshootercity.cooldowns.Cooldowns;
-import com.starshootercity.originsmobs.OriginsMobs;
-import com.starshootercity.abilities.AbilityRegister;
-import com.starshootercity.abilities.VisibleAbility;
 import com.starshootercity.events.PlayerLeftClickEvent;
+import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,17 +19,17 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collections;
 
 public class SummonFangs implements VisibleAbility, Listener, CooldownAbility {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("You have the ability to summon fangs!", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "You have the ability to summon fangs!";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Summon Fangs", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Summon Fangs";
     }
 
     @Override
@@ -41,16 +40,23 @@ public class SummonFangs implements VisibleAbility, Listener, CooldownAbility {
     @EventHandler
     public void onPlayerLeftClick(PlayerLeftClickEvent event) {
         if (event.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) return;
-        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
-            if (hasCooldown(event.getPlayer())) return;
-            setCooldown(event.getPlayer());
-            Location currentLoc = event.getPlayer().getLocation();
-            for (int i = 0; i < 16; i++) {
+        runForAbility(event.getPlayer(), player -> {
+            if (hasCooldown(player)) return;
+            setCooldown(player);
+            Location currentLoc = player.getLocation();
+            for (int i = 0; i < getConfigOption(OriginsMobs.getInstance(), fangCount, ConfigManager.SettingType.INTEGER); i++) {
                 currentLoc.add(currentLoc.getDirection().setY(0));
                 if (!currentLoc.getBlock().getRelative(BlockFace.DOWN).isSolid()) continue;
                 currentLoc.getWorld().spawnEntity(currentLoc, EntityType.EVOKER_FANGS).getPersistentDataContainer().set(sentFromPlayerKey, PersistentDataType.STRING, event.getPlayer().getUniqueId().toString());
             }
         });
+    }
+
+    private final String fangCount = "fang_count";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), fangCount, Collections.singletonList("The number of fangs to summon"), ConfigManager.SettingType.INTEGER, 16);
     }
 
     @EventHandler

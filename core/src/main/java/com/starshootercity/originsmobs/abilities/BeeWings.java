@@ -1,10 +1,10 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import com.starshootercity.cooldowns.CooldownAbility;
 import com.starshootercity.cooldowns.Cooldowns;
+import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,19 +15,19 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BeeWings implements VisibleAbility, Listener, CooldownAbility {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("You can use your tiny bee wings to descend slower as an ability.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "You can use your tiny bee wings to descend slower as an ability.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Bee Wings", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Bee Wings";
     }
 
     @Override
@@ -39,16 +39,23 @@ public class BeeWings implements VisibleAbility, Listener, CooldownAbility {
 
     @EventHandler
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
-        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
+        runForAbility(event.getPlayer(), player -> {
             if (!event.isSneaking()) return;
-            if (hasCooldown(event.getPlayer())) return;
-            if (Bukkit.getCurrentTick() - lastToggledSneak.getOrDefault(event.getPlayer(), Bukkit.getCurrentTick() - 11) <= 10) {
-                setCooldown(event.getPlayer());
-                event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 100, 0, false, true));
+            if (hasCooldown(player)) return;
+            if (Bukkit.getCurrentTick() - lastToggledSneak.getOrDefault(player, Bukkit.getCurrentTick() - 11) <= 10) {
+                setCooldown(player);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, getConfigOption(OriginsMobs.getInstance(), duration, ConfigManager.SettingType.INTEGER), 0, false, true));
             } else {
-                lastToggledSneak.put(event.getPlayer(), Bukkit.getCurrentTick());
+                lastToggledSneak.put(player, Bukkit.getCurrentTick());
             }
         });
+    }
+
+    private final String duration = "duration";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), duration, Collections.singletonList("The duration in ticks of the slow falling effect"), ConfigManager.SettingType.INTEGER, 100);
     }
 
     @Override

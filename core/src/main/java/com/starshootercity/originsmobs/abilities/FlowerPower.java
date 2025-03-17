@@ -1,9 +1,8 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.originsmobs.OriginsMobs;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,17 +15,17 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collections;
 
 public class FlowerPower implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("When near multiple flowers, you gain regeneration.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "When near multiple flowers, you gain regeneration.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Flower Power", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Flower Power";
     }
 
     @Override
@@ -37,23 +36,36 @@ public class FlowerPower implements VisibleAbility, Listener {
     @EventHandler
     public void onServerTickEnd(ServerTickEndEvent event) {
         if (event.getTickNumber() % 40 != 0) return;
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            AbilityRegister.runForAbility(player, getKey(), () -> {
-                List<Integer> points = List.of(-3, -2, -1, 0, 1, 2, 3);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            runForAbility(p, player -> {
                 int num = 0;
-                for (int x : points) {
-                    for (int y : points) {
-                        for (int z : points) {
+                int ran = getConfigOption(OriginsMobs.getInstance(), range, SettingType.INTEGER);
+                for (int x = -ran; x <= ran; x++) {
+                    for (int y = -ran; y <= ran; y++) {
+                        for (int z = -ran; z <= ran; z++) {
                             Location loc = player.getLocation().clone().add(new Vector(x, y, z));
                             if (loc.distance(player.getLocation()) > 3) continue;
                             if (Tag.FLOWERS.isTagged(loc.getBlock().getType())) num += 1;
                         }
                     }
                 }
-                if (num >= 3) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 0, false, true));
+                if (num >= getConfigOption(OriginsMobs.getInstance(), requiredFlowers, SettingType.INTEGER)) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,
+                            200,
+                            getConfigOption(OriginsMobs.getInstance(), strength, SettingType.INTEGER), false, true));
                 }
             });
         }
+    }
+
+    private final String range = "range";
+    private final String requiredFlowers = "required_flowers";
+    private final String strength = "regeneration_strength";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), range, Collections.singletonList("Range to check for flowers in"), SettingType.INTEGER, 3);
+        registerConfigOption(OriginsMobs.getInstance(), requiredFlowers, Collections.singletonList("Required number of flowers"), SettingType.INTEGER, 3);
+        registerConfigOption(OriginsMobs.getInstance(), strength, Collections.singletonList("Strength of the regeneration"), SettingType.INTEGER, 0);
     }
 }

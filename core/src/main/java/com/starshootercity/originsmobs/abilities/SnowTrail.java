@@ -1,8 +1,6 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
@@ -10,19 +8,19 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class SnowTrail implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("You leave a trail of snow.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "You leave a trail of snow.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Snow Trail", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Snow Trail";
     }
 
     @Override
@@ -32,10 +30,12 @@ public class SnowTrail implements VisibleAbility, Listener {
 
     @EventHandler
     public void onServerTickEnd(ServerTickEndEvent event) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            AbilityRegister.runForAbility(player, getKey(), () -> {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            runForAbility(p, player -> {
                 if (player.getLocation().getBlock().getType() == Material.AIR) {
                     if (!player.getLocation().getBlock().canPlace(Material.SNOW.createBlockData())) return;
+                    BlockPlaceEvent blockPlaceEvent = new BlockPlaceEvent(player.getLocation().getBlock(), player.getLocation().getBlock().getState(), player.getLocation().getBlock(), player.getInventory().getItemInMainHand(), player, true, EquipmentSlot.HAND);
+                    if (!blockPlaceEvent.callEvent()) return;
                     player.getLocation().getBlock().setType(Material.SNOW);
                 }
             });

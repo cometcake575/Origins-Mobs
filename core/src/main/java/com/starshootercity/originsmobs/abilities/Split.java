@@ -1,7 +1,5 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import com.starshootercity.cooldowns.CooldownAbility;
 import com.starshootercity.cooldowns.Cooldowns;
@@ -22,19 +20,18 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class Split implements VisibleAbility, Listener, CooldownAbility {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("Turn your food points into a small slime to defend you!", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "Turn your food points into a small slime to defend you!";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Split Ability", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Split Ability";
     }
 
     @Override
@@ -46,13 +43,13 @@ public class Split implements VisibleAbility, Listener, CooldownAbility {
     public void onPlayerLeftClick(PlayerLeftClickEvent event) {
         if (event.getItem() != null) return;
         if (event.getPlayer().getFoodLevel() < 8) return;
-        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
-            if (hasCooldown(event.getPlayer())) return;
-            setCooldown(event.getPlayer());
-            event.getPlayer().setFoodLevel(event.getPlayer().getFoodLevel() - 8);
-            Slime slime = (Slime) event.getPlayer().getWorld().spawnEntity(event.getPlayer().getLocation(), EntityType.SLIME);
+        runForAbility(event.getPlayer(), player -> {
+            if (hasCooldown(player)) return;
+            setCooldown(player);
+            player.setFoodLevel(player.getFoodLevel() - 8);
+            Slime slime = (Slime) player.getWorld().spawnEntity(player.getLocation(), EntityType.SLIME);
             slime.setSize(2);
-            slime.getPersistentDataContainer().set(slimeKey, PersistentDataType.STRING, event.getPlayer().getUniqueId().toString());
+            slime.getPersistentDataContainer().set(slimeKey, PersistentDataType.STRING, player.getUniqueId().toString());
         });
     }
 

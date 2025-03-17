@@ -4,10 +4,12 @@
     "moborigins:split",
     "moborigins:small_weak",
     "moborigins:small_weak_knockback",
-    "origins:fall_immunity"
+    "origins:fall_immunity",
+    "moborigins:slimy_color",
+    "moborigins:dyeable"
   ],
   "icon": "minecraft:slime_ball",
   "impact": 1,
   "order": 3,
-  "description": "Green\u0020blobs\u0020of\u0020Jello,\u0020that\u0020bounce\u0020all\u0020around!"
+  "description": "Green blobs of Jello, that bounce all around!"
 }

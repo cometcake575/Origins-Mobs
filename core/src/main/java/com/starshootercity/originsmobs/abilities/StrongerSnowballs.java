@@ -2,9 +2,8 @@ package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.originsmobs.OriginsMobs;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.originsmobs.OriginsMobs;
 import net.kyori.adventure.key.Key;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
@@ -17,17 +16,17 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collections;
 
 public class StrongerSnowballs implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("Snowballs you throw are packed with ice, and deal 1 damage!", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "Snowballs you throw are packed with ice, and deal 1 damage!";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Stronger Snowballs", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Stronger Snowballs";
     }
 
     @Override
@@ -41,7 +40,7 @@ public class StrongerSnowballs implements VisibleAbility, Listener {
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         if (event.getEntity().getType() != EntityType.SNOWBALL) return;
         if (event.getEntity().getShooter() instanceof Player player) {
-            AbilityRegister.runForAbility(player, getKey(), () -> event.getEntity().getPersistentDataContainer().set(strongSnowballKey, OriginSwapper.BooleanPDT.BOOLEAN, true));
+            runForAbility(player, p -> event.getEntity().getPersistentDataContainer().set(strongSnowballKey, OriginSwapper.BooleanPDT.BOOLEAN, true));
         }
     }
 
@@ -51,8 +50,16 @@ public class StrongerSnowballs implements VisibleAbility, Listener {
             if (Boolean.TRUE.equals(event.getEntity().getPersistentDataContainer().get(strongSnowballKey, OriginSwapper.BooleanPDT.BOOLEAN))) {
                 OriginsReborn.getNMSInvoker().dealFreezeDamage(entity, 1);
                 Vector vector = event.getEntity().getVelocity();
+                if (!getConfigOption(OriginsMobs.getInstance(), doKnockback, SettingType.BOOLEAN)) return;
                 OriginsReborn.getNMSInvoker().knockback(entity, 0.5, -vector.getX(), -vector.getZ());
             }
         }
+    }
+
+    private final String doKnockback = "do_knockback";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), doKnockback, Collections.singletonList("Should snowballs do knockback"), SettingType.BOOLEAN, true);
     }
 }

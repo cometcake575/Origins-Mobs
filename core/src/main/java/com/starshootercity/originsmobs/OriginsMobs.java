@@ -3,12 +3,20 @@ package com.starshootercity.originsmobs;
 import com.starshootercity.originsmobs.abilities.*;
 import com.starshootercity.OriginsAddon;
 import com.starshootercity.abilities.Ability;
+import com.starshootercity.util.Metrics;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class OriginsMobs extends OriginsAddon {
+
+    private static OriginsMobs instance;
+
+    public static OriginsMobs getInstance() {
+        return instance;
+    }
+
     @Override
     public @NotNull String getNamespace() {
         return "moborigins";
@@ -71,7 +79,9 @@ public class OriginsMobs extends OriginsAddon {
                 new LavaWalk(),
                 new WaterBreathing(),
                 new Split(),
-                new PotionAction()
+                new PotionAction(),
+                Dyeable.dyeable,
+                new SlimyColor()
         );
     }
     private static MobsNMSInvoker nmsInvoker;
@@ -92,7 +102,7 @@ public class OriginsMobs extends OriginsAddon {
             case "1.21" -> new MobsNMSInvokerV1_21();
             case "1.21.1" -> new MobsNMSInvokerV1_21_1();
             case "1.21.2", "1.21.3" -> new MobsNMSInvokerV1_21_3();
-            default -> throw new IllegalStateException("Unexpected version: " + Bukkit.getMinecraftVersion() + " only versions 1.20 - 1.20.6 are supported");
+            default -> new MobsNMSInvokerV1_21_4();
         };
     }
 
@@ -102,6 +112,10 @@ public class OriginsMobs extends OriginsAddon {
 
     @Override
     public void onRegister() {
+        instance = this;
         initializeNMSInvoker();
+
+        int pluginId = 25122;
+        new Metrics(this, pluginId);
     }
 }

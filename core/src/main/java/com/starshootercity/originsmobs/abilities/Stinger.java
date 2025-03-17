@@ -1,8 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.originsmobs.OriginsMobs;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -14,19 +13,19 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Stinger implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("When you punch someone with your fist, you poison them for a few seconds.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "When you punch someone with your fist, you poison them for a few seconds.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Stinger", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Stinger";
     }
 
     @Override
@@ -38,13 +37,24 @@ public class Stinger implements VisibleAbility, Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof LivingEntity entity && event.getDamager() instanceof Player player) {
-            AbilityRegister.runForAbility(player, getKey(), () -> {
+        if (event.getEntity() instanceof LivingEntity entity) {
+            runForAbility(event.getDamager(), player -> {
                 if (Bukkit.getCurrentTick() - lastStungTicks.getOrDefault(player, Bukkit.getCurrentTick() - 100) >= 100) {
                     lastStungTicks.put(player, Bukkit.getCurrentTick());
-                    entity.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 60, 0, false, true));
+                    entity.addPotionEffect(new PotionEffect(PotionEffectType.POISON,
+                            getConfigOption(OriginsMobs.getInstance(), duration, SettingType.INTEGER),
+                            getConfigOption(OriginsMobs.getInstance(), strength, SettingType.INTEGER), false, true));
                 }
             });
         }
+    }
+
+    private final String duration = "poison_duration";
+    private final String strength = "poison_strength";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), duration, Collections.singletonList("Duration of the poison effect in ticks"), SettingType.INTEGER, 60);
+        registerConfigOption(OriginsMobs.getInstance(), strength, Collections.singletonList("Strength of the poison effect"), SettingType.INTEGER, 0);
     }
 }

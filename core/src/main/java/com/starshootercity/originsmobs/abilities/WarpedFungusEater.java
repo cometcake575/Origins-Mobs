@@ -1,8 +1,8 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,19 +15,19 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class WarpedFungusEater implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("You can eat warped fungus to recover some hunger, along with a small speed boost.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "You can eat warped fungus to recover some hunger, along with a small speed boost.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Fungus Hunger", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Fungus Hunger";
     }
 
     @Override
@@ -39,22 +39,39 @@ public class WarpedFungusEater implements VisibleAbility, Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
-            if (lastInteractedTicks.getOrDefault(event.getPlayer(), -1) == Bukkit.getCurrentTick()) return;
-            lastInteractedTicks.put(event.getPlayer(), Bukkit.getCurrentTick());
+        runForAbility(event.getPlayer(), player -> {
+            if (lastInteractedTicks.getOrDefault(player, -1) == Bukkit.getCurrentTick()) return;
+            lastInteractedTicks.put(player, Bukkit.getCurrentTick());
             if (event.getAction().isRightClick()) {
                 if (event.getItem() == null) return;
                 if (event.getItem().getType() == Material.WARPED_FUNGUS) {
                     if (event.getHand() != null) {
-                        if (event.getHand() == EquipmentSlot.OFF_HAND) event.getPlayer().swingOffHand();
-                        else event.getPlayer().swingMainHand();
+                        if (event.getHand() == EquipmentSlot.OFF_HAND) player.swingOffHand();
+                        else player.swingMainHand();
                     }
                     event.getItem().setAmount(event.getItem().getAmount() - 1);
-                    event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 0, false, true));
-                    event.getPlayer().setFoodLevel(Math.min(event.getPlayer().getFoodLevel() + 1, 20));
-                    event.getPlayer().setSaturation(Math.min(event.getPlayer().getSaturation() + 1, event.getPlayer().getFoodLevel()));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,
+                            getConfigOption(OriginsMobs.getInstance(), speedDuration, ConfigManager.SettingType.INTEGER),
+                            getConfigOption(OriginsMobs.getInstance(), speedStrength, ConfigManager.SettingType.INTEGER), false, true));
+                    player.setFoodLevel(Math.min(player.getFoodLevel() +
+                            getConfigOption(OriginsMobs.getInstance(), foodIncrease, ConfigManager.SettingType.INTEGER), 20));
+                    player.setSaturation(Math.min(player.getSaturation() +
+                            getConfigOption(OriginsMobs.getInstance(), saturationIncrease, ConfigManager.SettingType.FLOAT), player.getFoodLevel()));
                 }
             }
         });
+    }
+
+    private final String speedStrength = "speed_strength";
+    private final String speedDuration = "speed_duration";
+    private final String saturationIncrease = "saturation_increase";
+    private final String foodIncrease = "food_increase";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), speedDuration, Collections.singletonList("Duration of the speed effect in ticks"), ConfigManager.SettingType.INTEGER, 200);
+        registerConfigOption(OriginsMobs.getInstance(), speedStrength, Collections.singletonList("Strength of the speed effect"), ConfigManager.SettingType.INTEGER, 0);
+        registerConfigOption(OriginsMobs.getInstance(), foodIncrease, Collections.singletonList("Amount to increase hunger level by"), ConfigManager.SettingType.INTEGER, 1);
+        registerConfigOption(OriginsMobs.getInstance(), saturationIncrease, Collections.singletonList("Amount to increase saturation by"), ConfigManager.SettingType.FLOAT, 1f);
     }
 }

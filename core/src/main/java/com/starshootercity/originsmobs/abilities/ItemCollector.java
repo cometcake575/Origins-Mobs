@@ -1,9 +1,8 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.originsmobs.OriginsMobs;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -15,18 +14,19 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class ItemCollector implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("You have a larger item pickup radius.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "You have a larger item pickup radius.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Item Collector", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Item Collector";
     }
 
     @Override
@@ -52,9 +52,10 @@ public class ItemCollector implements VisibleAbility, Listener {
 
     @EventHandler
     public void onServerTickEnd(ServerTickEndEvent event) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            AbilityRegister.runForAbility(player, getKey(), () -> {
-                List<Entity> entities = player.getNearbyEntities(2.5, 2.5, 2.5);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            runForAbility(p, player -> {
+                double rad = getConfigOption(OriginsMobs.getInstance(), radius, SettingType.DOUBLE);
+                List<Entity> entities = player.getNearbyEntities(rad, rad, rad);
                 for (Entity entity : entities) {
                     if (entity instanceof Item item) {
                         if (!item.canPlayerPickup()) continue;
@@ -64,5 +65,12 @@ public class ItemCollector implements VisibleAbility, Listener {
                 }
             });
         }
+    }
+
+    private final String radius = "radius";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), radius, Collections.singletonList("Increased pickup range radius"), SettingType.DOUBLE, 2.5);
     }
 }

@@ -1,6 +1,5 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AttributeModifierAbility;
 import com.starshootercity.abilities.VisibleAbility;
@@ -10,17 +9,15 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public class Melting implements VisibleAbility, AttributeModifierAbility {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("As your temperature bar fills up, you'll slowly begin to melt in hot biomes, losing health and speed.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "As your temperature bar fills up, you'll slowly begin to melt in hot biomes, losing health and speed.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Melting", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Melting";
     }
 
     @Override

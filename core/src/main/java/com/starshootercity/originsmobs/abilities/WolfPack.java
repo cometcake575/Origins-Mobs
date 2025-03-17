@@ -1,6 +1,5 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AttributeModifierAbility;
 import com.starshootercity.abilities.VisibleAbility;
@@ -43,12 +42,12 @@ public class WolfPack implements VisibleAbility, AttributeModifierAbility {
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("When you are near at least 4 wolves you gain speed and attack damage.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "When you are near at least 4 wolves you gain speed and attack damage.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Wolf Pack", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Wolf Pack";
     }
 }

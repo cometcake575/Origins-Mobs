@@ -1,10 +1,9 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.destroystokyo.paper.entity.ai.Goal;
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
@@ -16,17 +15,17 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.world.EntitiesLoadEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collections;
 
 public class PillagerAligned implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("Villagers don't like you, and pillagers like you!", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "Villagers don't like you, and pillagers like you!";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Pillager Aligned", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Pillager Aligned";
     }
 
     @Override
@@ -38,14 +37,14 @@ public class PillagerAligned implements VisibleAbility, Listener {
     public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
         if (event.getEntity().getType() == EntityType.PILLAGER) {
             if (event.getTarget() == null) return;
-            AbilityRegister.runForAbility(event.getTarget(), getKey(), () -> event.setCancelled(true));
+            runForAbility(event.getTarget(), player -> event.setCancelled(true));
         }
     }
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof Villager villager) {
-            AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
+            runForAbility(event.getPlayer(), player -> {
                 event.setCancelled(true);
                 villager.shakeHead();
             });
@@ -69,7 +68,15 @@ public class PillagerAligned implements VisibleAbility, Listener {
     }
 
     public void fixGolem(IronGolem golem) {
-        Goal<Mob> goal = OriginsMobs.getNMSInvoker().getIronGolemAttackGoal(golem, player -> AbilityRegister.hasAbility(player, getKey()));
+        if (!getConfigOption(OriginsMobs.getInstance(), golemsAttack, ConfigManager.SettingType.BOOLEAN)) return;
+        Goal<Mob> goal = OriginsMobs.getNMSInvoker().getIronGolemAttackGoal(golem, this::hasAbility);
         Bukkit.getMobGoals().addGoal(golem, 3, goal);
+    }
+
+    private final String golemsAttack = "golems_attack";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), golemsAttack, Collections.singletonList("Whether Iron Golems should attack the player"), ConfigManager.SettingType.BOOLEAN, true);
     }
 }

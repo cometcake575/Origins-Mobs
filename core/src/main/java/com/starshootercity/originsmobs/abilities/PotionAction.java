@@ -1,12 +1,11 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import com.starshootercity.cooldowns.CooldownAbility;
 import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.events.PlayerLeftClickEvent;
+import com.starshootercity.originsmobs.OriginsMobs;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -16,17 +15,17 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collections;
 
 public class PotionAction implements VisibleAbility, Listener, CooldownAbility {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("Get a random potion effect, based on the situation you are in.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "Get a random potion effect, based on the situation you are in.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Perfect Potion", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Perfect Potion";
     }
 
     @Override
@@ -37,22 +36,30 @@ public class PotionAction implements VisibleAbility, Listener, CooldownAbility {
     @EventHandler
     public void onPlayerLeftClick(PlayerLeftClickEvent event) {
         if (event.getItem() != null) return;
-        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
-            if (hasCooldown(event.getPlayer())) return;
-            setCooldown(event.getPlayer());
-            event.getPlayer().getWorld().playSound(event.getPlayer(), Sound.ENTITY_WITCH_DRINK, SoundCategory.VOICE, 1, 1);
+        runForAbility(event.getPlayer(), player -> {
+            if (hasCooldown(player)) return;
+            setCooldown(player);
+            player.getWorld().playSound(player, Sound.ENTITY_WITCH_DRINK, SoundCategory.VOICE, 1, 1);
             PotionEffectType effectType;
-            if (event.getPlayer().getFireTicks() > 0) {
+            if (player.getFireTicks() > 0) {
                 effectType = PotionEffectType.FIRE_RESISTANCE;
-            } else if (event.getPlayer().getFallDistance() >= 4) {
+            } else if (player.getFallDistance() >= 4) {
                 effectType = PotionEffectType.SLOW_FALLING;
-            } else if (OriginsReborn.getNMSInvoker().isUnderWater(event.getPlayer())) {
+            } else if (OriginsReborn.getNMSInvoker().isUnderWater(player)) {
                 effectType = PotionEffectType.WATER_BREATHING;
             } else {
                 effectType = PotionEffectType.SPEED;
             }
-            event.getPlayer().addPotionEffect(new PotionEffect(effectType, 200, 0));
+            player.addPotionEffect(new PotionEffect(effectType,
+                    getConfigOption(OriginsMobs.getInstance(), potionDuration, SettingType.INTEGER), 0));
         });
+    }
+
+    private final String potionDuration = "potion_duration";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), potionDuration, Collections.singletonList("Duration of the potion effect in ticks"), SettingType.INTEGER, 200);
     }
 
     @Override

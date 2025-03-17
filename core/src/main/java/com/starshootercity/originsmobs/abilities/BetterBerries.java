@@ -1,8 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.originsmobs.OriginsMobs;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -10,17 +9,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collections;
 
 public class BetterBerries implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("Berries taste extra delicious to you!", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "Berries taste extra delicious to you!";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Better Berries", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Better Berries";
     }
 
     @Override
@@ -31,9 +30,20 @@ public class BetterBerries implements VisibleAbility, Listener {
     @EventHandler
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
         if (event.getItem().getType() != Material.SWEET_BERRIES) return;
-        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
-            event.getPlayer().setFoodLevel(Math.min(event.getPlayer().getFoodLevel() + 2, 20));
-            event.getPlayer().setSaturation(Math.min(event.getPlayer().getSaturation() + 1, event.getPlayer().getFoodLevel()));
+        runForAbility(event.getPlayer(), player -> {
+            event.getPlayer().setFoodLevel(Math.min(event.getPlayer().getFoodLevel() +
+                    getConfigOption(OriginsMobs.getInstance(), foodIncrease, SettingType.INTEGER), 20));
+            event.getPlayer().setSaturation(Math.min(event.getPlayer().getSaturation() +
+                    getConfigOption(OriginsMobs.getInstance(), saturationIncrease, SettingType.FLOAT), event.getPlayer().getFoodLevel()));
         });
+    }
+
+    private final String foodIncrease = "food_increase";
+    private final String saturationIncrease = "saturation_increase";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), foodIncrease, Collections.singletonList("The amount to increase the food given by Sweet Berries by"), SettingType.INTEGER, 2);
+        registerConfigOption(OriginsMobs.getInstance(), saturationIncrease, Collections.singletonList("The amount to increase the saturation given by Sweet Berries by"), SettingType.FLOAT, 1f);
     }
 }

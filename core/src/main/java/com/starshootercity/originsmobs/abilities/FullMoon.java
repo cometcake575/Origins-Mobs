@@ -1,6 +1,5 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AttributeModifierAbility;
 import com.starshootercity.abilities.VisibleAbility;
@@ -10,8 +9,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class FullMoon implements VisibleAbility, AttributeModifierAbility {
     @Override
@@ -40,12 +37,12 @@ public class FullMoon implements VisibleAbility, AttributeModifierAbility {
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("During a full moon you get Faster, Stronger, and Healthier.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "During a full moon you get Faster, Stronger, and Healthier.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Werewolf-like", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Werewolf-like";
     }
 }

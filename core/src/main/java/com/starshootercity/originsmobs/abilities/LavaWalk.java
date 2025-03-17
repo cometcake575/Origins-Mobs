@@ -1,6 +1,5 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
 import com.starshootercity.abilities.AttributeModifierAbility;
 import com.starshootercity.abilities.BreakSpeedModifierAbility;
@@ -16,9 +15,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public class LavaWalk implements VisibleAbility, FlightAllowingAbility, AttributeModifierAbility, BreakSpeedModifierAbility {
+
+    // If someone can find a better way to implement this please tell me
+
     @Override
     public boolean canFly(Player player) {
         if (player.isInLava()) {
@@ -45,13 +45,13 @@ public class LavaWalk implements VisibleAbility, FlightAllowingAbility, Attribut
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("You have the ability to walk on lava source blocks! You are also quicker while walking on lava, and slower on land.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "You have the ability to walk on lava source blocks! You are also quicker while walking on lava, and slower on land.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Lava Walker", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Lava Walker";
     }
 
     @Override

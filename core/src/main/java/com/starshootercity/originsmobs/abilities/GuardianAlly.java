@@ -1,7 +1,5 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import net.kyori.adventure.key.Key;
 import org.bukkit.entity.EntityType;
@@ -10,17 +8,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public class GuardianAlly implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("Guardians don't attack you!", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "Guardians don't attack you!";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Guardian Ally", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Guardian Ally";
     }
 
     @Override
@@ -32,7 +28,7 @@ public class GuardianAlly implements VisibleAbility, Listener {
     public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
         if (event.getEntityType() == EntityType.GUARDIAN || event.getEntityType() == EntityType.ELDER_GUARDIAN) {
             if (event.getTarget() == null) return;
-            AbilityRegister.runForAbility(event.getTarget(), getKey(), () -> event.setCancelled(true));
+            runForAbility(event.getTarget(), player -> event.setCancelled(true));
         }
     }
 }

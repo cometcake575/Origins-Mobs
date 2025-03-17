@@ -1,8 +1,8 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,18 +12,24 @@ import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Random;
 
 public class LowerTotemChance implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("Totems have a 10% chance not to break on use.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "Totems have a %s% chance not to break on use.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Arcane Totems", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Arcane Totems";
+    }
+
+    @Override
+    public String modifyDescription(String description) {
+        int am = (int) (getConfigOption(OriginsMobs.getInstance(), noBreakChance, ConfigManager.SettingType.FLOAT) * 100);
+        return description.replace("%s", String.valueOf(am));
     }
 
     @Override
@@ -33,10 +39,10 @@ public class LowerTotemChance implements VisibleAbility, Listener {
 
     @EventHandler
     public void onEntityResurrect(EntityResurrectEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            AbilityRegister.runForAbility(player, getKey(), () -> {
+        if (event.getEntity() instanceof Player p) {
+            runForAbility(p, player -> {
                 if (event.getEntity().getEquipment() == null) return;
-                if (random.nextDouble() < 0.9) return;
+                if (random.nextDouble() > getConfigOption(OriginsMobs.getInstance(), noBreakChance, ConfigManager.SettingType.FLOAT)) return;
                 if (event.getEntity().getEquipment().getItemInMainHand().getType() == Material.TOTEM_OF_UNDYING) {
                     event.getEntity().getEquipment().setItemInMainHand(new ItemStack(Material.TOTEM_OF_UNDYING));
                 } else {
@@ -47,4 +53,11 @@ public class LowerTotemChance implements VisibleAbility, Listener {
     }
 
     private final Random random = new Random();
+
+    private final String noBreakChance = "no_break_chance";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), noBreakChance, Collections.singletonList("The chance a totem won't break (between 0 and 1)"), ConfigManager.SettingType.FLOAT, 0.1f);
+    }
 }

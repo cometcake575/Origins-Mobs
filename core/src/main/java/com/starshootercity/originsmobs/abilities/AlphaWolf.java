@@ -1,8 +1,6 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import net.kyori.adventure.key.Key;
 import org.bukkit.attribute.AttributeInstance;
@@ -15,17 +13,15 @@ import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public class AlphaWolf implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("Wolves you tame are stronger!", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "Wolves you tame are stronger!";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Alpha Wolf", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Alpha Wolf";
     }
 
     @Override
@@ -36,8 +32,8 @@ public class AlphaWolf implements VisibleAbility, Listener {
     @EventHandler
     public void onEntityTame(EntityTameEvent event) {
         if (event.getEntity().getType() == EntityType.WOLF) {
-            if (event.getOwner() instanceof Player player) {
-                AbilityRegister.runForAbility(player, getKey(), () -> makeWolfStronger(event.getEntity()));
+            if (event.getOwner() instanceof Player p) {
+                runForAbility(p, player -> makeWolfStronger(event.getEntity()));
             }
         }
     }
@@ -46,7 +42,7 @@ public class AlphaWolf implements VisibleAbility, Listener {
     public void onEntityBreed(EntityBreedEvent event) {
         if (event.getEntity().getType() == EntityType.WOLF) {
             if (event.getBreeder() == null) return;
-            AbilityRegister.runForAbility(event.getBreeder(), getKey(), () -> makeWolfStronger(event.getEntity()));
+            runForAbility(event.getBreeder(), player -> makeWolfStronger(event.getEntity()));
         }
     }
 

@@ -1,12 +1,12 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import com.starshootercity.cooldowns.CooldownAbility;
 import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.events.PlayerLeftClickEvent;
+import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -19,17 +19,17 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collections;
 
 public class WolfHowl implements VisibleAbility, Listener, CooldownAbility {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("You can use the left click key when holding nothing to howl, and give speed and strength to nearby wolves and yourself.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "You can use the left click key when holding nothing to howl, and give speed and strength to nearby wolves and yourself.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Howl", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Howl";
     }
 
     @Override
@@ -41,19 +41,29 @@ public class WolfHowl implements VisibleAbility, Listener, CooldownAbility {
     public void onPlayerLeftClick(PlayerLeftClickEvent event) {
         if (event.getClickedBlock() != null) return;
         if (event.getItem() != null) return;
-        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> {
-            if (hasCooldown(event.getPlayer())) return;
-            setCooldown(event.getPlayer());
-            event.getPlayer().getWorld().playSound(event.getPlayer(), Sound.ENTITY_WOLF_HOWL, SoundCategory.PLAYERS, 1, 0.5f);
-            for (Entity entity : event.getPlayer().getNearbyEntities(5, 5, 5)) {
+        runForAbility(event.getPlayer(), player -> {
+            if (hasCooldown(player)) return;
+            setCooldown(player);
+            player.getWorld().playSound(player, Sound.ENTITY_WOLF_HOWL, SoundCategory.PLAYERS, 1, 0.5f);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 400, 0, false, true));
+            player.addPotionEffect(new PotionEffect(OriginsReborn.getNMSInvoker().getStrengthEffect(), 400, 0, false, true));
+            double ran = getConfigOption(OriginsMobs.getInstance(), range, ConfigManager.SettingType.DOUBLE);
+            for (Entity entity : player.getNearbyEntities(ran, ran, ran)) {
                 if (entity instanceof LivingEntity livingEntity) {
-                    if (livingEntity.getType() == EntityType.WOLF || livingEntity == event.getPlayer()) {
+                    if (livingEntity.getType() == EntityType.WOLF) {
                         livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 400, 0, false, true));
                         livingEntity.addPotionEffect(new PotionEffect(OriginsReborn.getNMSInvoker().getStrengthEffect(), 400, 0, false, true));
                     }
                 }
             }
         });
+    }
+
+    private final String range = "range";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsMobs.getInstance(), range, Collections.singletonList("Range to check for wolves"), ConfigManager.SettingType.DOUBLE, 5d);
     }
 
     @Override

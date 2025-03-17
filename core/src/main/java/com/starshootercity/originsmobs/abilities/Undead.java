@@ -2,9 +2,7 @@ package com.starshootercity.originsmobs.abilities;
 
 import com.destroystokyo.paper.MaterialTags;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import com.starshootercity.OriginSwapper;
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.abilities.AbilityRegister;
 import com.starshootercity.abilities.VisibleAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
 import net.kyori.adventure.key.Key;
@@ -16,19 +14,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class Undead implements VisibleAbility, Listener {
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getDescription() {
-        return OriginSwapper.LineData.makeLineFor("You are undead, and burn in the daylight. You also take more damage from smite.", OriginSwapper.LineData.LineComponent.LineType.DESCRIPTION);
+    public String description() {
+        return "You are undead, and burn in the daylight. You also take more damage from smite.";
     }
 
     @Override
-    public @NotNull List<OriginSwapper.LineData.LineComponent> getTitle() {
-        return OriginSwapper.LineData.makeLineFor("Undead", OriginSwapper.LineData.LineComponent.LineType.TITLE);
+    public String title() {
+        return "Undead";
     }
 
     @Override
@@ -38,9 +37,8 @@ public class Undead implements VisibleAbility, Listener {
 
     @EventHandler
     public void onServerTickEnd(ServerTickEndEvent ignored) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            AbilityRegister.runForAbility(player, getKey(),
-                    () -> {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            runForAbility(p, player -> {
                         Block block = player.getWorld().getHighestBlockAt(player.getLocation());
                         while ((MaterialTags.GLASS.isTagged(block) || (MaterialTags.GLASS_PANES.isTagged(block)) && block.getY() >= player.getLocation().getY())) {
                             block = block.getRelative(BlockFace.DOWN);
@@ -54,6 +52,14 @@ public class Undead implements VisibleAbility, Listener {
                         }
                         boolean isInOverworld = player.getWorld() == Bukkit.getWorld(overworld);
                         boolean day = player.getWorld().isDayTime();
+
+                        if (!getConfigOption(OriginsReborn.getInstance(), burnWithHelmet, SettingType.BOOLEAN)) {
+                            ItemStack helm = player.getInventory().getHelmet();
+                            if (helm != null) {
+                                if (!helm.getType().isAir()) return;
+                            }
+                        }
+
                         if (height && isInOverworld && day && !player.isInWaterOrRainOrBubbleColumn()) {
                             player.setFireTicks(Math.max(player.getFireTicks(), 60));
                         }
@@ -61,9 +67,16 @@ public class Undead implements VisibleAbility, Listener {
         }
     }
 
+    private final String burnWithHelmet = "burn_with_helmet";
+
+    @Override
+    public void initialize() {
+        registerConfigOption(OriginsReborn.getInstance(), burnWithHelmet, List.of("Whether the player should burn even when wearing a helmet"), SettingType.BOOLEAN, true);
+    }
+
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        AbilityRegister.runForAbility(event.getEntity(), getKey(), () -> {
+        runForAbility(event.getEntity(), player -> {
             if (event.getDamager() instanceof LivingEntity entity) {
                 int level = entity.getActiveItem().getEnchantmentLevel(OriginsMobs.getNMSInvoker().getSmiteEnchantment());
                 event.setDamage(event.getDamage() + (2.5 * level));

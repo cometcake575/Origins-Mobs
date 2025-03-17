@@ -1,7 +1,6 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.abilities.Ability;
-import com.starshootercity.abilities.AbilityRegister;
 import net.kyori.adventure.key.Key;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -32,7 +31,7 @@ public class Illager implements Ability, Listener {
     public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
         if (ILLAGERS.contains(event.getEntity().getType())) {
             if (event.getTarget() == null) return;
-            AbilityRegister.runForAbility(event.getTarget(), getKey(), () -> event.setCancelled(true));
+            runForAbility(event.getTarget(), player -> event.setCancelled(true));
         }
     }
 }
