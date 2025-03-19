@@ -1,8 +1,8 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.AttributeModifierAbility;
-import com.starshootercity.abilities.VisibleAbility;
-import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.abilities.types.AttributeModifierAbility;
+import com.starshootercity.abilities.types.CooldownAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.events.PlayerLeftClickEvent;
 import com.starshootercity.originsmobs.OriginsMobs;
@@ -122,12 +122,7 @@ public class TridentExpert implements VisibleAbility, Listener, AttributeModifie
     }
 
     @Override
-    public double getAmount() {
-        return 0;
-    }
-
-    @Override
-    public double getChangedAmount(Player player) {
+    public double getAmount(Player player) {
         return player.getInventory().getItemInMainHand().getType() == Material.TRIDENT && Bukkit.getCurrentTick() - lastTridentEnabledTime.getOrDefault(player, Bukkit.getCurrentTick() - 400) < 400 ? 2 : 0;
     }
 

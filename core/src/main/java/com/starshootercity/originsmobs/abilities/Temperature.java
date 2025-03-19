@@ -1,6 +1,6 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.abilities.types.CooldownAbility;
 import com.starshootercity.cooldowns.Cooldowns;
 import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;

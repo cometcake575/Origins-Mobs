@@ -1,7 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.VisibleAbility;
-import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.abilities.types.CooldownAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.originsmobs.OriginsMobs;
 import com.starshootercity.util.config.ConfigManager;
@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +55,7 @@ public class BeeWings implements VisibleAbility, Listener, CooldownAbility {
     private final String duration = "duration";
 
     @Override
-    public void initialize() {
+    public void initialize(JavaPlugin plugin) {
         registerConfigOption(OriginsMobs.getInstance(), duration, Collections.singletonList("The duration in ticks of the slow falling effect"), ConfigManager.SettingType.INTEGER, 100);
     }
 

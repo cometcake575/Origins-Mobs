@@ -1,11 +1,13 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExhaustionEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -28,13 +30,13 @@ public class ZombieHunger implements VisibleAbility, Listener {
 
     @EventHandler
     public void onEntityExhaustion(EntityExhaustionEvent event) {
-        runForAbility(event.getEntity(), player -> event.setExhaustion(event.getExhaustion() * getConfigOption(OriginsMobs.getInstance(), exhaustionMultiplier, SettingType.FLOAT)));
+        runForAbility(event.getEntity(), player -> event.setExhaustion(event.getExhaustion() * getConfigOption(OriginsMobs.getInstance(), exhaustionMultiplier, ConfigManager.SettingType.FLOAT)));
     }
 
     private final String exhaustionMultiplier = "exhaustion_multiplier";
 
     @Override
-    public void initialize() {
-        registerConfigOption(OriginsMobs.getInstance(), exhaustionMultiplier, Collections.singletonList("The amount to multiply exhaustion by"), SettingType.FLOAT, 1.5f);
+    public void initialize(JavaPlugin plugin) {
+        registerConfigOption(OriginsMobs.getInstance(), exhaustionMultiplier, Collections.singletonList("The amount to multiply exhaustion by"), ConfigManager.SettingType.FLOAT, 1.5f);
     }
 }

@@ -1,8 +1,9 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -12,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -54,7 +56,7 @@ public class ItemCollector implements VisibleAbility, Listener {
     public void onServerTickEnd(ServerTickEndEvent event) {
         for (Player p : Bukkit.getOnlinePlayers()) {
             runForAbility(p, player -> {
-                double rad = getConfigOption(OriginsMobs.getInstance(), radius, SettingType.DOUBLE);
+                double rad = getConfigOption(OriginsMobs.getInstance(), radius, ConfigManager.SettingType.DOUBLE);
                 List<Entity> entities = player.getNearbyEntities(rad, rad, rad);
                 for (Entity entity : entities) {
                     if (entity instanceof Item item) {
@@ -70,7 +72,7 @@ public class ItemCollector implements VisibleAbility, Listener {
     private final String radius = "radius";
 
     @Override
-    public void initialize() {
-        registerConfigOption(OriginsMobs.getInstance(), radius, Collections.singletonList("Increased pickup range radius"), SettingType.DOUBLE, 2.5);
+    public void initialize(JavaPlugin plugin) {
+        registerConfigOption(OriginsMobs.getInstance(), radius, Collections.singletonList("Increased pickup range radius"), ConfigManager.SettingType.DOUBLE, 2.5);
     }
 }

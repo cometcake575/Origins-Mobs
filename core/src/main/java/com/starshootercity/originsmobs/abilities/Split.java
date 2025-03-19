@@ -1,7 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.VisibleAbility;
-import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.abilities.types.CooldownAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.events.PlayerLeftClickEvent;
 import com.starshootercity.originsmobs.OriginsMobs;

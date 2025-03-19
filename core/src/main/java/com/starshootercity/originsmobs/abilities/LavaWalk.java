@@ -1,10 +1,10 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.abilities.AttributeModifierAbility;
-import com.starshootercity.abilities.BreakSpeedModifierAbility;
-import com.starshootercity.abilities.FlightAllowingAbility;
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.AttributeModifierAbility;
+import com.starshootercity.abilities.types.BreakSpeedModifierAbility;
+import com.starshootercity.abilities.types.FlightAllowingAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -65,12 +65,7 @@ public class LavaWalk implements VisibleAbility, FlightAllowingAbility, Attribut
     }
 
     @Override
-    public double getAmount() {
-        return 0;
-    }
-
-    @Override
-    public double getChangedAmount(Player player) {
+    public double getAmount(Player player) {
         return player.isInLava() ? 0.145 : 0;
     }
 
@@ -80,7 +75,7 @@ public class LavaWalk implements VisibleAbility, FlightAllowingAbility, Attribut
     }
 
     @Override
-    public BlockMiningContext provideContextFor(Player player) {
+    public BlockMiningContext getMiningContext(Player player) {
         return new BlockMiningContext(
                 player.getInventory().getItemInMainHand(),
                 player.getPotionEffect(OriginsReborn.getNMSInvoker().getMiningFatigueEffect()),

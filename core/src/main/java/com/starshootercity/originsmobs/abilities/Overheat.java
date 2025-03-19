@@ -1,8 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import com.starshootercity.abilities.AbilityRegister;
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.events.PlayerSwapOriginEvent;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
@@ -46,11 +45,11 @@ public class Overheat implements VisibleAbility, Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> Temperature.INSTANCE.setTemperature(event.getPlayer(), 0));
+        runForAbility(event.getPlayer(), player -> Temperature.INSTANCE.setTemperature(player, 0));
     }
 
     @EventHandler
     public void onPlayerSwapOrigin(PlayerSwapOriginEvent event) {
-        AbilityRegister.runForAbility(event.getPlayer(), getKey(), () -> Temperature.INSTANCE.setTemperature(event.getPlayer(), 0));
+        runForAbility(event.getPlayer(), player -> Temperature.INSTANCE.setTemperature(player, 0));
     }
 }

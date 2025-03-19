@@ -1,8 +1,9 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,6 +11,7 @@ import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -39,7 +41,7 @@ public class FlowerPower implements VisibleAbility, Listener {
         for (Player p : Bukkit.getOnlinePlayers()) {
             runForAbility(p, player -> {
                 int num = 0;
-                int ran = getConfigOption(OriginsMobs.getInstance(), range, SettingType.INTEGER);
+                int ran = getConfigOption(OriginsMobs.getInstance(), range, ConfigManager.SettingType.INTEGER);
                 for (int x = -ran; x <= ran; x++) {
                     for (int y = -ran; y <= ran; y++) {
                         for (int z = -ran; z <= ran; z++) {
@@ -49,10 +51,10 @@ public class FlowerPower implements VisibleAbility, Listener {
                         }
                     }
                 }
-                if (num >= getConfigOption(OriginsMobs.getInstance(), requiredFlowers, SettingType.INTEGER)) {
+                if (num >= getConfigOption(OriginsMobs.getInstance(), requiredFlowers, ConfigManager.SettingType.INTEGER)) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,
                             200,
-                            getConfigOption(OriginsMobs.getInstance(), strength, SettingType.INTEGER), false, true));
+                            getConfigOption(OriginsMobs.getInstance(), strength, ConfigManager.SettingType.INTEGER), false, true));
                 }
             });
         }
@@ -63,9 +65,9 @@ public class FlowerPower implements VisibleAbility, Listener {
     private final String strength = "regeneration_strength";
 
     @Override
-    public void initialize() {
-        registerConfigOption(OriginsMobs.getInstance(), range, Collections.singletonList("Range to check for flowers in"), SettingType.INTEGER, 3);
-        registerConfigOption(OriginsMobs.getInstance(), requiredFlowers, Collections.singletonList("Required number of flowers"), SettingType.INTEGER, 3);
-        registerConfigOption(OriginsMobs.getInstance(), strength, Collections.singletonList("Strength of the regeneration"), SettingType.INTEGER, 0);
+    public void initialize(JavaPlugin plugin) {
+        registerConfigOption(OriginsMobs.getInstance(), range, Collections.singletonList("Range to check for flowers in"), ConfigManager.SettingType.INTEGER, 3);
+        registerConfigOption(OriginsMobs.getInstance(), requiredFlowers, Collections.singletonList("Required number of flowers"), ConfigManager.SettingType.INTEGER, 3);
+        registerConfigOption(OriginsMobs.getInstance(), strength, Collections.singletonList("Strength of the regeneration"), ConfigManager.SettingType.INTEGER, 0);
     }
 }

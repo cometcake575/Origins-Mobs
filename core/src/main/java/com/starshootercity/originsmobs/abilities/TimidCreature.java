@@ -1,8 +1,8 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.abilities.AttributeModifierAbility;
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.AttributeModifierAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
 import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
@@ -11,6 +11,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -23,12 +24,7 @@ public class TimidCreature implements VisibleAbility, AttributeModifierAbility {
     }
 
     @Override
-    public double getAmount() {
-        return 0;
-    }
-
-    @Override
-    public double getChangedAmount(Player player) {
+    public double getAmount(Player player) {
         double ran = getConfigOption(OriginsMobs.getInstance(), range, ConfigManager.SettingType.DOUBLE);
         List<Entity> entities = player.getNearbyEntities(ran, ran, ran);
         entities.removeIf(entity -> entity.getType() != EntityType.PLAYER);
@@ -38,7 +34,7 @@ public class TimidCreature implements VisibleAbility, AttributeModifierAbility {
     private final String range = "range";
 
     @Override
-    public void initialize() {
+    public void initialize(JavaPlugin plugin) {
         registerConfigOption(OriginsMobs.getInstance(), range, Collections.singletonList("Range to check for players in"), ConfigManager.SettingType.DOUBLE, 8d);
     }
 

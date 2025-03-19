@@ -1,27 +1,28 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.SkinChangingAbility;
-import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.abilities.types.SkinChangingAbility;
 import net.kyori.adventure.key.Key;
 import org.bukkit.*;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.image.BufferedImage;
 
-public class SlimyColor implements SkinChangingAbility {
+public class SlimyColor implements SkinChangingAbility, Listener {
 
     private NamespacedKey key;
 
     @Override
-    public void initialize() {
-        key = new NamespacedKey(OriginsMobs.getInstance(), "color");
+    public void initialize(JavaPlugin plugin) {
+        key = new NamespacedKey(plugin, "color");
     }
 
     @Override

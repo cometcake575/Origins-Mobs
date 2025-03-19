@@ -1,7 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.destroystokyo.paper.entity.ai.Goal;
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
 import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.world.EntitiesLoadEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -76,7 +77,7 @@ public class PillagerAligned implements VisibleAbility, Listener {
     private final String golemsAttack = "golems_attack";
 
     @Override
-    public void initialize() {
+    public void initialize(JavaPlugin plugin) {
         registerConfigOption(OriginsMobs.getInstance(), golemsAttack, Collections.singletonList("Whether Iron Golems should attack the player"), ConfigManager.SettingType.BOOLEAN, true);
     }
 }

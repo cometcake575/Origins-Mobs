@@ -1,8 +1,8 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.abilities.AttributeModifierAbility;
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.AttributeModifierAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import io.papermc.paper.world.MoonPhase;
 import net.kyori.adventure.key.Key;
 import org.bukkit.attribute.Attribute;
@@ -17,12 +17,7 @@ public class FullMoon implements VisibleAbility, AttributeModifierAbility {
     }
 
     @Override
-    public double getAmount() {
-        return 0;
-    }
-
-    @Override
-    public double getChangedAmount(Player player) {
+    public double getAmount(Player player) {
         return !player.getWorld().isDayTime() && player.getWorld().getMoonPhase() == MoonPhase.FULL_MOON ? 0.07 : 0;
     }
 

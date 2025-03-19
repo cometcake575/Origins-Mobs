@@ -1,7 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.VisibleAbility;
-import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.abilities.types.CooldownAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.events.PlayerLeftClickEvent;
 import com.starshootercity.originsmobs.OriginsMobs;
@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -55,7 +56,7 @@ public class SummonFangs implements VisibleAbility, Listener, CooldownAbility {
     private final String fangCount = "fang_count";
 
     @Override
-    public void initialize() {
+    public void initialize(JavaPlugin plugin) {
         registerConfigOption(OriginsMobs.getInstance(), fangCount, Collections.singletonList("The number of fangs to summon"), ConfigManager.SettingType.INTEGER, 16);
     }
 

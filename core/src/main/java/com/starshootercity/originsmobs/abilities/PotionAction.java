@@ -1,16 +1,18 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.abilities.VisibleAbility;
-import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.abilities.types.CooldownAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.events.PlayerLeftClickEvent;
 import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -51,15 +53,15 @@ public class PotionAction implements VisibleAbility, Listener, CooldownAbility {
                 effectType = PotionEffectType.SPEED;
             }
             player.addPotionEffect(new PotionEffect(effectType,
-                    getConfigOption(OriginsMobs.getInstance(), potionDuration, SettingType.INTEGER), 0));
+                    getConfigOption(OriginsMobs.getInstance(), potionDuration, ConfigManager.SettingType.INTEGER), 0));
         });
     }
 
     private final String potionDuration = "potion_duration";
 
     @Override
-    public void initialize() {
-        registerConfigOption(OriginsMobs.getInstance(), potionDuration, Collections.singletonList("Duration of the potion effect in ticks"), SettingType.INTEGER, 200);
+    public void initialize(JavaPlugin plugin) {
+        registerConfigOption(OriginsMobs.getInstance(), potionDuration, Collections.singletonList("Duration of the potion effect in ticks"), ConfigManager.SettingType.INTEGER, 200);
     }
 
     @Override

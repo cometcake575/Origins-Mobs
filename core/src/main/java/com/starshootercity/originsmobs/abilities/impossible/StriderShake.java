@@ -1,6 +1,6 @@
 package com.starshootercity.originsmobs.abilities.impossible;
 
-import com.starshootercity.abilities.Ability;
+import com.starshootercity.abilities.types.Ability;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,12 +1,13 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
 import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +45,7 @@ public class BetterPotions implements VisibleAbility, Listener {
     private final String durationMultiplier = "duration_multiplier";
 
     @Override
-    public void initialize() {
+    public void initialize(JavaPlugin plugin) {
         registerConfigOption(OriginsMobs.getInstance(), durationMultiplier, Collections.singletonList("The amount to multiply a potion's duration by"), ConfigManager.SettingType.FLOAT, 2f);
     }
 }

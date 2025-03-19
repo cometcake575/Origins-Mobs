@@ -2,7 +2,7 @@ package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.AddonLoader;
 import com.starshootercity.OriginSwapper;
-import com.starshootercity.abilities.Ability;
+import com.starshootercity.abilities.types.Ability;
 import com.starshootercity.events.PlayerSwapOriginEvent;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;

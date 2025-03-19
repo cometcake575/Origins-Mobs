@@ -1,6 +1,6 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
 import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +69,7 @@ public class WarpedFungusEater implements VisibleAbility, Listener {
     private final String foodIncrease = "food_increase";
 
     @Override
-    public void initialize() {
+    public void initialize(JavaPlugin plugin) {
         registerConfigOption(OriginsMobs.getInstance(), speedDuration, Collections.singletonList("Duration of the speed effect in ticks"), ConfigManager.SettingType.INTEGER, 200);
         registerConfigOption(OriginsMobs.getInstance(), speedStrength, Collections.singletonList("Strength of the speed effect"), ConfigManager.SettingType.INTEGER, 0);
         registerConfigOption(OriginsMobs.getInstance(), foodIncrease, Collections.singletonList("Amount to increase hunger level by"), ConfigManager.SettingType.INTEGER, 1);

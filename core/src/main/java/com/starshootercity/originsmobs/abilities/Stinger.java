@@ -1,7 +1,8 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
+import com.starshootercity.util.config.ConfigManager;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -9,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -42,8 +44,8 @@ public class Stinger implements VisibleAbility, Listener {
                 if (Bukkit.getCurrentTick() - lastStungTicks.getOrDefault(player, Bukkit.getCurrentTick() - 100) >= 100) {
                     lastStungTicks.put(player, Bukkit.getCurrentTick());
                     entity.addPotionEffect(new PotionEffect(PotionEffectType.POISON,
-                            getConfigOption(OriginsMobs.getInstance(), duration, SettingType.INTEGER),
-                            getConfigOption(OriginsMobs.getInstance(), strength, SettingType.INTEGER), false, true));
+                            getConfigOption(OriginsMobs.getInstance(), duration, ConfigManager.SettingType.INTEGER),
+                            getConfigOption(OriginsMobs.getInstance(), strength, ConfigManager.SettingType.INTEGER), false, true));
                 }
             });
         }
@@ -53,8 +55,8 @@ public class Stinger implements VisibleAbility, Listener {
     private final String strength = "poison_strength";
 
     @Override
-    public void initialize() {
-        registerConfigOption(OriginsMobs.getInstance(), duration, Collections.singletonList("Duration of the poison effect in ticks"), SettingType.INTEGER, 60);
-        registerConfigOption(OriginsMobs.getInstance(), strength, Collections.singletonList("Strength of the poison effect"), SettingType.INTEGER, 0);
+    public void initialize(JavaPlugin plugin) {
+        registerConfigOption(OriginsMobs.getInstance(), duration, Collections.singletonList("Duration of the poison effect in ticks"), ConfigManager.SettingType.INTEGER, 60);
+        registerConfigOption(OriginsMobs.getInstance(), strength, Collections.singletonList("Strength of the poison effect"), ConfigManager.SettingType.INTEGER, 0);
     }
 }

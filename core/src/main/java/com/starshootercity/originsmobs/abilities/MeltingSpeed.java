@@ -1,7 +1,7 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.abilities.AttributeModifierAbility;
+import com.starshootercity.abilities.types.AttributeModifierAbility;
 import net.kyori.adventure.key.Key;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -20,12 +20,7 @@ public class MeltingSpeed implements AttributeModifierAbility {
     }
 
     @Override
-    public double getAmount() {
-        return 0;
-    }
-
-    @Override
-    public double getChangedAmount(Player player) {
+    public double getAmount(Player player) {
         int temperature = Temperature.INSTANCE.getTemperature(player);
         if (temperature >= 100) return -0.04;
         else if (temperature >= 50) return -0.02;

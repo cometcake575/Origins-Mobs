@@ -1,6 +1,6 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.VisibleAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.events.PlayerSwapOriginEvent;
 import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Entity;

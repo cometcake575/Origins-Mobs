@@ -1,6 +1,6 @@
 package com.starshootercity.originsmobs.abilities;
 
-import com.starshootercity.abilities.AttributeModifierAbility;
+import com.starshootercity.abilities.types.AttributeModifierAbility;
 import com.starshootercity.originsmobs.OriginsMobs;
 import net.kyori.adventure.key.Key;
 import org.bukkit.attribute.Attribute;
@@ -16,12 +16,7 @@ public class SmallWeakKnockback implements Listener, AttributeModifierAbility {
     }
 
     @Override
-    public double getAmount() {
-        return 0;
-    }
-
-    @Override
-    public double getChangedAmount(Player player) {
+    public double getAmount(Player player) {
         return player.getHealth() <= 4 ? 2.5 : 0;
     }
 

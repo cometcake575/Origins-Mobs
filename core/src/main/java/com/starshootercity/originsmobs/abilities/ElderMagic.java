@@ -1,8 +1,8 @@
 package com.starshootercity.originsmobs.abilities;
 
 import com.starshootercity.OriginsReborn;
-import com.starshootercity.abilities.VisibleAbility;
-import com.starshootercity.cooldowns.CooldownAbility;
+import com.starshootercity.abilities.types.CooldownAbility;
+import com.starshootercity.abilities.types.VisibleAbility;
 import com.starshootercity.cooldowns.Cooldowns;
 import com.starshootercity.events.PlayerLeftClickEvent;
 import com.starshootercity.originsmobs.OriginsMobs;
@@ -15,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,7 +62,7 @@ public class ElderMagic implements VisibleAbility, Listener, CooldownAbility {
     private final String strength = "mining_fatigue_strength";
 
     @Override
-    public void initialize() {
+    public void initialize(JavaPlugin plugin) {
         registerConfigOption(OriginsMobs.getInstance(), range, Collections.singletonList("The range of the effect"), ConfigManager.SettingType.DOUBLE, 5d);
         registerConfigOption(OriginsMobs.getInstance(), duration, Collections.singletonList("The duration in ticks of the effect"), ConfigManager.SettingType.INTEGER, 600);
         registerConfigOption(OriginsMobs.getInstance(), strength, Collections.singletonList("The strength of the effect"), ConfigManager.SettingType.INTEGER, 1);
